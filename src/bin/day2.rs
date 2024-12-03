@@ -6,30 +6,32 @@ fn main() {
     let lines = aoc::get_input(2);
 
     let time_part1 = std::time::Instant::now();
-    println!("Part 1: {:?}", part1(&lines).unwrap());
-    eprintln!("# Took {:.2?}", time_part1.elapsed());
+    let result_part1 = part1(&lines);
+    let duration_part1 = time_part1.elapsed();
+    println!("Part 1 ({:?}): {:?}", duration_part1, result_part1);
 
     let time_part2 = std::time::Instant::now();
-    println!("Part 2: {:?}", part2(&lines).unwrap());
-    eprintln!("# Took {:.2?}", time_part2.elapsed());
+    let result_part2 = part2(&lines);
+    let duration_part2 = time_part2.elapsed();
+    println!("Part 2 ({:?}): {:?}", duration_part2, result_part2);
 }
 
-fn part1(reports: &Vec<String>) -> Option<usize> {
+fn part1(reports: &Vec<String>) -> usize {
     let safe_reports = reports
         .iter()
         .map(parse_report)
         .filter(|report| is_safe_no_removals(&report));
 
-    Some(safe_reports.count())
+    safe_reports.count()
 }
 
-fn part2(reports: &Vec<String>) -> Option<usize> {
+fn part2(reports: &Vec<String>) -> usize {
     let safe_reports = reports
         .iter()
         .map(parse_report)
         .filter(|report| is_safe_no_removals(&report) || is_safe_with_removal(&report));
 
-    Some(safe_reports.count())
+    safe_reports.count()
 }
 
 fn parse_report(report: &String) -> Vec<u32> {
@@ -64,14 +66,22 @@ fn is_safe_with_removal(report: &Vec<u32>) -> bool {
     false
 }
 
-#[test]
-fn test_part1() {
-    let content = "7 6 4 2 1
-1 2 7 8 9
-9 7 6 2 1
-1 3 2 4 5
-8 6 4 4 1
-1 3 6 7 9";
-    assert_eq!(part1(&to_lines(content)).unwrap(), 2);
-    assert_eq!(part2(&to_lines(content)).unwrap(), 4);
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use indoc::indoc;
+
+    #[test]
+    fn test_part1() {
+        let content = indoc! {"
+            7 6 4 2 1
+            1 2 7 8 9
+            9 7 6 2 1
+            1 3 2 4 5
+            8 6 4 4 1
+            1 3 6 7 9
+        "};
+        assert_eq!(part1(&to_lines(content)), 2);
+        assert_eq!(part2(&to_lines(content)), 4);
+    }
 }
